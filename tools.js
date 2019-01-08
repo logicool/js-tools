@@ -2,6 +2,55 @@
   工具类合集
 */
 
+const isRequired = () => {
+  throw new Error('Missing parameter')
+}
+
+export function percentDayOfMonth(time = isRequired()){
+  let date, percent
+  if (typeof time === 'object') {
+    date = time
+  } else {
+    if (('' + time).length === 10) time = parseInt(time) * 1000
+    date = new Date(time)
+  }
+  const formatObj = {
+    y: date.getFullYear(),
+    m: date.getMonth() + 1,
+    d: date.getDate() - 1
+  }
+
+  const leapYear = (formatObj.y % 4 === 0 && formatObj.y % 100 !== 0) || formatObj.y % 400 === 0
+  
+  if (formatObj.m === 2) {
+    if (leapYear) {
+      percent = (formatObj.d / 29) * 100
+    } else {
+      percent = (formatObj.d / 28) * 100
+    }
+  } else if ( (formatObj.m <= 7 && formatObj.m % 2) || (formatObj.m > 7  && !formatObj.m % 2) ) {
+    percent = (formatObj.d / 31) * 100
+  } else {
+    percent = (formatObj.d / 30) * 100
+  }
+  
+  // else if (formatObj.m <= 7) {
+  //   if (!!formatObj.m % 2) {
+  //     percent = (formatObj.d / 31) * 100
+  //   } else {
+  //     percent = (formatObj.d / 30) * 100
+  //   }
+  // } else if (formatObj.m > 7) {
+  //   if (!!formatObj.m % 2) {
+  //     percent = (formatObj.d / 30) * 100
+  //   } else {
+  //     percent = (formatObj.d / 31) * 100
+  //   }
+  // }
+
+  return Math.round(percent)
+}
+
 export function getUUID() {
   return 'xxxxxxxx-xxxx-gxxx-hxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
     return (c === 'x' ? (Math.random() * 16 | 0) : ('r&0x3' | '0x8')).toString(16)
